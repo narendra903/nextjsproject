@@ -1,150 +1,375 @@
 "use client"
-import Image from "next/image";
-
-import { SignIn, SignInButton, UserButton, useUser } from "@clerk/nextjs";
+import { motion } from "framer-motion"
+import Image from "next/image"
+import { useState } from "react"
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { ArrowRightIcon, ChatBubbleBottomCenterTextIcon, SparklesIcon, UserGroupIcon } from "@heroicons/react/24/outline"
+import { useInView } from "react-intersection-observer"
+import { cn } from "@/lib/utils"
 
 export default function Home() {
-  // const user = useAuthContext();
-  // console.log(user?.user)
-
-  const { user } = useUser();
+  const { user } = useUser()
+  const [activeFaq, setActiveFaq] = useState<number | null>(null)
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  })
 
   return (
-    <div>
-      <header className="flex  flex-wrap sm:justify-start  sm:flex-nowrap z-50 w-full bg-white border-b border-gray-200 text-sm py-3 sm:py-0 dark:bg-neutral-800 dark:border-neutral-700">
-        <nav className="relative  p-4 max-w-[85rem] w-full mx-auto px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8" aria-label="Global">
-          <div className="flex items-center justify-between">
-            <div>
-              <Image src={'/logo.svg'} alt="logo" width={150} height={150} />
-            </div>
+    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-teal-50 dark:from-purple-950 dark:to-teal-950">
+      {/* Glassmorphism Header */}
+      <header className="fixed top-0 w-full backdrop-blur-md bg-white/70 dark:bg-neutral-900/70 border-b border-purple-100 dark:border-purple-900 z-50">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center">
+            <Image src="/logo.svg" alt="ZenFlow" width={120} height={32} className="h-8 w-auto" />
           </div>
-          <div id="navbar-collapse-with-animation" className="hs-collapse hidden overflow-hidden transition-all duration-300 basis-full grow sm:block">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end sm:ps-7 cursor-pointer">
-
-              {/* Clerk Authentication  */}
-              {!user ? <SignInButton mode='modal' signUpForceRedirectUrl={'/dashboard'}>
-                <div className="flex items-center gap-x-2 font-medium text-gray-500 hover:text-blue-600 sm:border-s sm:border-gray-300 py-2 sm:py-0 sm:ms-4 sm:my-6 sm:ps-6 dark:border-neutral-700 dark:text-neutral-400 dark:hover:text-blue-500" >
-                  <svg className="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
-                  </svg>
-                  Get Started
-                </div>
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            {user ? (
+              <UserButton afterSignOutUrl="/" />
+            ) : (
+              <SignInButton mode="modal">
+                <button className="bg-gradient-to-r from-purple-600 to-teal-500 text-white px-6 py-2 rounded-full font-medium hover:opacity-90 transition-opacity">
+                  Start Free Trial
+                </button>
               </SignInButton>
-                :
-                <UserButton />
-              }
-            </div>
+            )}
           </div>
         </nav>
       </header>
-      <div className="relative overflow-hidden before:absolute before:top-0 before:start-1/2 before:bg-[url('https://preline.co/assets/svg/examples/polygon-bg-element.svg')] dark:before:bg-[url('https://preline.co/assets/svg/examples-dark/polygon-bg-element.svg')] before:bg-no-repeat before:bg-top before:bg-cover before:size-full before:-z-[1] before:transform before:-translate-x-1/2">
-        <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-10">
 
-          <div className="flex justify-center">
-            <a className="inline-flex items-center gap-x-2 bg-white border border-gray-200 text-sm text-gray-800 p-1 ps-3 rounded-full transition hover:border-gray-300 dark:bg-neutral-800 dark:border-neutral-700 dark:hover:border-neutral-600 dark:text-neutral-200"
-              href="tubeguruji.com" target="_blank">
-              TUBEGURUJI Membership - Join Now
-              <span className="py-1.5 px-2.5 inline-flex justify-center items-center gap-x-2 rounded-full bg-gray-200 font-semibold text-sm text-gray-600 dark:bg-neutral-700 dark:text-neutral-400">
-                <svg className="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-              </span>
-            </a>
+      {/* Hero Section */}
+      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-teal-500 mb-6">
+                Your Personal AI Yoga Guide - Practice Smarter, Not Harder
+              </h1>
+              <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
+                Experience personalized yoga guidance powered by Gemini 2.0 Flash AI. Transform your practice with real-time adjustments, custom routines, and expert insights.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <SignInButton mode="modal">
+                  <button className="bg-gradient-to-r from-purple-600 to-teal-500 text-white px-8 py-3 rounded-full font-medium hover:opacity-90 transition-opacity text-lg">
+                    Start Your Journey
+                  </button>
+                </SignInButton>
+                <button className="border border-purple-200 dark:border-purple-800 px-8 py-3 rounded-full font-medium hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors text-lg">
+                  Watch Demo
+                </button>
+              </div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative"
+            >
+              <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
+                <Image
+                  src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b"
+                  alt="Yoga Practice"
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-tr from-purple-600/20 to-transparent" />
+              </div>
+              {/* AI Chat Overlay */}
+              <div className="absolute -right-4 -bottom-4 bg-white dark:bg-neutral-800 p-4 rounded-lg shadow-xl max-w-xs">
+                <div className="flex items-start gap-3">
+                  <div className="rounded-full bg-purple-100 dark:bg-purple-900 p-2">
+                    <SparklesIcon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                      "I noticed your downward dog needs slight adjustment. Try pressing your heels down more and lifting your hips higher."
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
-
-
-
-          <div className="mt-5 max-w-2xl text-center mx-auto">
-            <h1 className="block font-bold text-gray-800 text-4xl md:text-5xl lg:text-6xl dark:text-neutral-200">
-              Build Something
-              <span className="bg-clip-text bg-gradient-to-tl from-blue-600 to-violet-600 text-transparent"> With NextJs</span>
-            </h1>
-          </div>
-
-
-          <div className="mt-5 max-w-3xl text-center mx-auto">
-            <p className="text-lg text-gray-600 dark:text-neutral-400">
-              Revolutionize your content creation with our AI-powered app, delivering engaging and high-quality apps in seconds.</p>
-          </div>
-
-
-          <div className="mt-8 gap-3 flex justify-center">
-            <a className="inline-flex justify-center items-center 
-      gap-x-3 text-center bg-gradient-to-tl from-blue-600
-       to-violet-600 hover:from-violet-600 hover:to-blue-600 border border-transparent cursor-pointer text-white text-sm font-medium rounded-md focus:outline-none focus:ring-1 focus:ring-gray-600 py-3 px-4 dark:focus:ring-offset-gray-800"
-              href="/dashboard">
-              Get started
-              <svg className="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-            </a>
-
-          </div>
-
-
-
         </div>
-      </div>
+      </section>
 
-
-      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 items-center gap-2">
-
-          <a className="group flex flex-col justify-center hover:bg-gray-50 rounded-xl p-4 md:p-7 dark:hover:bg-neutral-800" href="#">
-            <div className="flex justify-center items-center size-12 bg-blue-600 rounded-xl">
-              <svg className="flex-shrink-0 size-6 text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="10" height="14" x="3" y="8" rx="2" /><path d="M5 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-2.4" /><path d="M8 18h.01" /></svg>
-            </div>
-            <div className="mt-5">
-              <h3 className="group-hover:text-gray-600 text-lg font-semibold text-gray-800 dark:text-white dark:group-hover:text-gray-400">25+ templates</h3>
-              <p className="mt-1 text-gray-600 dark:text-neutral-400">Responsive, and mobile-first project on the web</p>
-              <span className="mt-2 inline-flex items-center gap-x-1.5 text-sm text-blue-600 decoration-2 group-hover:underline font-medium">
-                Learn more
-                <svg className="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-              </span>
-            </div>
-          </a>
-
-          <a className="group flex flex-col justify-center hover:bg-gray-50 rounded-xl p-4 md:p-7 dark:hover:bg-neutral-800" href="#">
-            <div className="flex justify-center items-center size-12 bg-blue-600 rounded-xl">
-              <svg className="flex-shrink-0 size-6 text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 7h-9" /><path d="M14 17H5" /><circle cx="17" cy="17" r="3" /><circle cx="7" cy="7" r="3" /></svg>
-            </div>
-            <div className="mt-5">
-              <h3 className="group-hover:text-gray-600 text-lg font-semibold text-gray-800 dark:text-white dark:group-hover:text-gray-400">Customizable</h3>
-              <p className="mt-1 text-gray-600 dark:text-neutral-400">Components are easily customized and extendable</p>
-              <span className="mt-2 inline-flex items-center gap-x-1.5 text-sm text-blue-600 decoration-2 group-hover:underline font-medium">
-                Learn more
-                <svg className="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-              </span>
-            </div>
-          </a>
-
-          <a className="group flex flex-col justify-center hover:bg-gray-50 rounded-xl p-4 md:p-7 dark:hover:bg-neutral-800" href="#">
-            <div className="flex justify-center items-center size-12 bg-blue-600 rounded-xl">
-              <svg className="flex-shrink-0 size-6 text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>
-            </div>
-            <div className="mt-5">
-              <h3 className="group-hover:text-gray-600 text-lg font-semibold text-gray-800 dark:text-white dark:group-hover:text-gray-400">Free to Use</h3>
-              <p className="mt-1 text-gray-600 dark:text-neutral-400">Every component and plugin is well documented</p>
-              <span className="mt-2 inline-flex items-center gap-x-1.5 text-sm text-blue-600 decoration-2 group-hover:underline font-medium">
-                Learn more
-                <svg className="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-              </span>
-            </div>
-          </a>
-
-          <a className="group flex flex-col justify-center hover:bg-gray-50 rounded-xl p-4 md:p-7 dark:hover:bg-neutral-800" href="#">
-            <div className="flex justify-center items-center size-12 bg-blue-600 rounded-xl">
-              <svg className="flex-shrink-0 size-6 text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5Z" /><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1" /></svg>
-            </div>
-            <div className="mt-5">
-              <h3 className="group-hover:text-gray-600 text-lg font-semibold text-gray-800 dark:text-white dark:group-hover:text-gray-400">24/7 Support</h3>
-              <p className="mt-1 text-gray-600 dark:text-neutral-400">Contact us 24 hours a day, 7 days a week</p>
-              <span className="mt-2 inline-flex items-center gap-x-1.5 text-sm text-blue-600 decoration-2 group-hover:underline font-medium">
-                Learn more
-                <svg className="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-              </span>
-            </div>
-          </a>
-
+      {/* Features Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white/50 dark:bg-neutral-900/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Why Choose ZenFlow?</h2>
+            <p className="text-gray-600 dark:text-gray-300">Experience the perfect blend of ancient wisdom and modern AI technology</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                ref={ref}
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <div className="rounded-full bg-purple-100 dark:bg-purple-900 p-3 w-12 h-12 flex items-center justify-center mb-4">
+                  <feature.icon className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
+      {/* How It Works */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">How ZenFlow Works</h2>
+          <div className="grid md:grid-cols-4 gap-8">
+            {steps.map((step, index) => (
+              <div key={step.title} className="relative">
+                {index < steps.length - 1 && (
+                  <div className="hidden md:block absolute top-8 left-full w-full h-0.5 bg-gradient-to-r from-purple-600 to-teal-500" />
+                )}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="text-center"
+                >
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-600 to-teal-500 flex items-center justify-center text-white text-xl font-bold mx-auto mb-4">
+                    {index + 1}
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300">{step.description}</p>
+                </motion.div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white/50 dark:bg-neutral-900/50">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">Choose Your Path</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {pricingPlans.map((plan, index) => (
+              <motion.div
+                key={plan.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                className={cn(
+                  "rounded-xl p-8 relative",
+                  plan.popular
+                    ? "bg-gradient-to-b from-purple-600 to-teal-500 text-white shadow-xl"
+                    : "bg-white dark:bg-neutral-800 shadow-lg"
+                )}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <span className="bg-yellow-400 text-black text-sm font-medium px-4 py-1 rounded-full">
+                      Most Popular
+                    </span>
+                  </div>
+                )}
+                <h3 className="text-2xl font-bold mb-4">{plan.name}</h3>
+                <div className="mb-6">
+                  <span className="text-4xl font-bold">${plan.price}</span>
+                  <span className="text-sm opacity-80">/month</span>
+                </div>
+                <ul className="space-y-3 mb-8">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-center gap-2">
+                      <svg
+                        className={cn(
+                          "w-5 h-5",
+                          plan.popular ? "text-white" : "text-purple-600 dark:text-purple-400"
+                        )}
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <SignInButton mode="modal">
+                  <button
+                    className={cn(
+                      "w-full py-3 rounded-full font-medium transition-opacity hover:opacity-90",
+                      plan.popular
+                        ? "bg-white text-purple-600"
+                        : "bg-gradient-to-r from-purple-600 to-teal-500 text-white"
+                    )}
+                  >
+                    Get Started
+                  </button>
+                </SignInButton>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <div
+                key={faq.question}
+                className="bg-white dark:bg-neutral-800 rounded-lg shadow-md overflow-hidden"
+              >
+                <button
+                  className="w-full px-6 py-4 text-left flex justify-between items-center"
+                  onClick={() => setActiveFaq(activeFaq === index ? null : index)}
+                >
+                  <span className="font-medium">{faq.question}</span>
+                  <ArrowRightIcon
+                    className={cn(
+                      "w-5 h-5 transition-transform",
+                      activeFaq === index ? "rotate-90" : ""
+                    )}
+                  />
+                </button>
+                {activeFaq === index && (
+                  <div className="px-6 pb-4">
+                    <p className="text-gray-600 dark:text-gray-300">{faq.answer}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-gradient-to-r from-purple-600 to-teal-500 rounded-2xl p-8 md:p-12 text-white text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Ready to Transform Your Yoga Practice?
+            </h2>
+            <p className="text-lg mb-8 opacity-90">
+              Join thousands of practitioners who have elevated their yoga journey with ZenFlow's AI guidance.
+            </p>
+            <SignInButton mode="modal">
+              <button className="bg-white text-purple-600 px-8 py-3 rounded-full font-medium hover:opacity-90 transition-opacity text-lg">
+                Start Your Free Trial
+              </button>
+            </SignInButton>
+          </div>
+        </div>
+      </section>
     </div>
-  );
+  )
 }
+
+const features = [
+  {
+    title: "Personalized Guidance",
+    description: "Get real-time feedback and adjustments tailored to your unique practice style and goals.",
+    icon: SparklesIcon,
+  },
+  {
+    title: "AI-Powered Insights",
+    description: "Leverage Gemini 2.0 Flash AI for detailed pose analysis and improvement suggestions.",
+    icon: ChatBubbleBottomCenterTextIcon,
+  },
+  {
+    title: "Community Support",
+    description: "Connect with fellow practitioners and share your progress in our supportive community.",
+    icon: UserGroupIcon,
+  },
+]
+
+const steps = [
+  {
+    title: "Sign Up",
+    description: "Create your account and tell us about your yoga experience and goals.",
+  },
+  {
+    title: "AI Assessment",
+    description: "Our AI analyzes your practice style and current skill level.",
+  },
+  {
+    title: "Personalized Plan",
+    description: "Receive a custom practice plan tailored to your needs.",
+  },
+  {
+    title: "Start Practice",
+    description: "Begin your journey with real-time AI guidance and support.",
+  },
+]
+
+const pricingPlans = [
+  {
+    name: "Basic",
+    price: 0,
+    features: [
+      "Basic pose guidance",
+      "5 AI-guided sessions/month",
+      "Community access",
+      "Basic progress tracking",
+    ],
+    popular: false,
+  },
+  {
+    name: "Pro",
+    price: 19,
+    features: [
+      "Advanced pose guidance",
+      "Unlimited AI-guided sessions",
+      "Priority community support",
+      "Detailed progress analytics",
+      "Custom practice plans",
+      "Live class access",
+    ],
+    popular: true,
+  },
+  {
+    name: "Studio",
+    price: 49,
+    features: [
+      "Everything in Pro",
+      "Multiple user accounts",
+      "Studio management tools",
+      "Custom branding",
+      "Priority support",
+      "API access",
+    ],
+    popular: false,
+  },
+]
+
+const faqs = [
+  {
+    question: "How accurate is the AI pose detection?",
+    answer: "Our Gemini 2.0 Flash AI achieves over 95% accuracy in pose detection and provides real-time feedback with millisecond latency.",
+  },
+  {
+    question: "Do I need special equipment?",
+    answer: "No special equipment needed! Just your device's camera and a yoga mat. Our AI works with any standard smartphone or laptop camera.",
+  },
+  {
+    question: "Can beginners use ZenFlow?",
+    answer: "Absolutely! ZenFlow adapts to all skill levels, providing appropriate guidance and modifications for beginners to advanced practitioners.",
+  },
+  {
+    question: "How does the free trial work?",
+    answer: "Start with a 14-day free trial of our Pro plan. No credit card required. Cancel anytime before the trial ends.",
+  },
+]

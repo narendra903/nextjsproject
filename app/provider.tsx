@@ -3,6 +3,7 @@ import { AuthContext } from '@/context/AuthContext';
 import { useUser } from '@clerk/nextjs';
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
+import { useTheme } from '@/hooks/use-theme';
 
 
 function Provider({
@@ -10,20 +11,23 @@ function Provider({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-
     const { user } = useUser();
+    const { theme } = useTheme();
+
     useEffect(() => {
         user && createNewUser();
-    }, [user]);
+        // Apply theme class to html element
+        document.documentElement.className = theme;
+    }, [user, theme]);
 
     const createNewUser = async () => {
         const result = await axios.post('/api/user');
     }
 
     return (
-        <div>
+        <AuthContext.Provider value={{ user }}>
             {children}
-        </div>
+        </AuthContext.Provider>
     )
 }
 
