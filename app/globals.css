@@ -138,13 +138,23 @@ html {
 }
 
 /* Gradient text utility */
-.gradient-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-teal-500;
+@layer components {
+  .gradient-text {
+    background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(to right, rgb(147 51 234), rgb(20 184 166));
+  }
 }
 
 /* Glassmorphism effect */
-.glass {
-  @apply backdrop-blur-md bg-white/70 dark:bg-neutral-900/70;
+@layer components {
+  .glass {
+    backdrop-filter: blur(12px);
+    background-color: rgb(255 255 255 / 0.7);
+  }
+  .dark .glass {
+    background-color: rgb(23 23 23 / 0.7);
+  }
 }
 
 /* Animations */
@@ -165,8 +175,18 @@ html {
 }
 
 /* Custom focus styles */
-.focus-ring {
-  @apply focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-900;
+@layer components {
+  .focus-ring {
+    outline: none;
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow);
+    --tw-ring-color: rgb(168 85 247 / 0.5);
+    --tw-ring-offset-width: 2px;
+  }
+  .dark .focus-ring {
+    --tw-ring-offset-color: rgb(23 23 23);
+  }
 }
 
 /* Custom scrollbar */
@@ -174,14 +194,26 @@ html {
   width: 10px;
 }
 
-::-webkit-scrollbar-track {
-  @apply bg-purple-50 dark:bg-neutral-800;
-}
+@layer components {
+  ::-webkit-scrollbar-track {
+    background-color: rgb(243 232 255);
+  }
+  .dark ::-webkit-scrollbar-track {
+    background-color: rgb(38 38 38);
+  }
 
-::-webkit-scrollbar-thumb {
-  @apply bg-purple-200 dark:bg-purple-800 rounded-full;
-}
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(233 213 255);
+    border-radius: 9999px;
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    background-color: rgb(107 33 168);
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-purple-300 dark:bg-purple-700;
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(216 180 254);
+  }
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(126 34 206);
+  }
 }
